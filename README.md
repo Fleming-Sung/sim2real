@@ -9,3 +9,9 @@ CogEnvDecoder == 0.1.29
 discrete_v2.py 中 修改了小车朝向与目标之间的夹角；奖励函数是 欧氏距离+碰撞次数+碰撞时间；训练过程中每找到一个目标就reset。
 
 test_env.py 是直接evaluate上面discrete_v2.py中的最好的模型
+
+## 2022.05.14
+
+continue.py 三个动作 dx  dy  dtheta; 奖励函数； 训练方式：遇到障碍物就reset； 
+
+存在问题：有时会卡在某一个地方。
