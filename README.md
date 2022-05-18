@@ -12,6 +12,12 @@ test_env.py 是直接evaluate上面discrete_v2.py中的最好的模型
 
 ## 2022.05.14
 
-continue.py 三个动作 dx  dy  dtheta; 奖励函数； 训练方式：遇到障碍物就reset； 
+continue.py 三个动作 dx  dy  dtheta; 奖励函数； 训练方式：遇到障碍物就reset； 每局训练
 
 存在问题：有时会卡在某一个地方。
+
+## 2022.05.18
+
+continue_v3.py 设置卡顿标志，加入临时标志； 每步训练
+
+
