@@ -19,6 +19,7 @@ continue.py 三个动作 dx  dy  dtheta; 奖励函数：goal_reward/ dis_reward/
 ## 2022.05.18
 
 continue_v3.py 设置卡顿标志，加入临时标志：卡顿后，有30步前往临时目标； 每步训练
+
 test_env_continue.py 环境测试 v2版本，要提前在官网的 tag 里下载好
 
 
