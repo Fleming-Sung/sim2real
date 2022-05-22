@@ -25,3 +25,7 @@ test_env_continue.py 环境测试 v2版本，要提前在官网的 tag 里下载
 ## 2022.05.19
 
 continue_v4.py: update the flag of stuck. 
+
+
+## 2022.05.22
+Toolbox.py 中提供了更新的计算距离的方式：高斯混合模型模拟障碍物 曲线积分计算实际距离
