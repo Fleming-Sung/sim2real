@@ -29,3 +29,8 @@ continue_v4.py: update the flag of stuck.
 
 ## 2022.05.22
 Toolbox.py 中提供了更新的计算距离的方式：高斯混合模型模拟障碍物 曲线积分计算实际距离
+
+## 2022.05.24
+We accidently find that the rotation is not an absolute bad state actually. By set the reward function to "100 * base_reward + 10 * rotate_loss + 1000 * collision_loss" and train the agent with 100000 steps, we get a great agent which could succeed in finding the object about 4-5 times averagely in 10 repeated evaluations. The rotated agent perform well probably because the agent stucks with a lower probability compared with those who do not rotate. Even to the extent that the rotation could prevent the agent from stuck.
+We still find that the performance went bad with more training steps. 
+Moreover, we get some tips about the influence on the performance by adjust the reward function. With a higher weights for rotate_loss, the agent stops rotating at an earlier traing step.
