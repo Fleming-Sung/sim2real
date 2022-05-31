@@ -22,9 +22,9 @@ class Q_network(nn.Module):
 class Actor(nn.Module):
     def __init__(self, state_dim, action_dim, max_action):
         super(Actor, self).__init__()
-        self.l1 = nn.Linear(state_dim, 16)
-        self.l2 = nn.Linear(16, 32)
-        self.l3 = nn.Linear(32, action_dim)
+        self.l1 = nn.Linear(state_dim, 128)
+        self.l2 = nn.Linear(128, 256)
+        self.l3 = nn.Linear(256, action_dim)
         self.max_action = max_action
 
     def forward(self, state):
@@ -37,9 +37,9 @@ class Actor(nn.Module):
 class Critic(nn.Module):
     def __init__(self, state_dim, action_dim):
         super(Critic, self).__init__()
-        self.l1 = nn.Linear(state_dim + action_dim, 16)
-        self.l2 = nn.Linear(16, 32)
-        self.l3 = nn.Linear(32, 1)
+        self.l1 = nn.Linear(state_dim + action_dim, 128)
+        self.l2 = nn.Linear(128, 256)
+        self.l3 = nn.Linear(256, 1)
 
     def forward(self, state, action):
         x = torch.cat([state, action], 1)
@@ -48,15 +48,28 @@ class Critic(nn.Module):
         x = self.l3(x)
         return x
 
+class Predictor(nn.Module):
+    def __init__(self, state_dim, max_pos):
+        super(Predictor, self).__init__()
+        self.l1 = nn.Linear(state_dim, 128)
+        self.l2 = nn.Linear(128, 256)
+        self.l3 = nn.Linear(256, 2)
+        self.max_pos = max_pos
+
+    def forward(self, state):
+        next_pos = F.relu(self.l1(state))
+        next_pos = F.relu(self.l2(next_pos))
+        next_pos = self.l3(next_pos)
+        return self.max_pos * torch.tanh(next_pos)
 
 class SAC_Actor(nn.Module):
     def __init__(self, state_dim, action_dim, max_action):
         super(SAC_Actor, self).__init__()
-        self.l1 = nn.Linear(state_dim, 16)
-        self.l2 = nn.Linear(16, 32)
-        self.l3 = nn.Linear(32, 16)
-        self.mu_layer = nn.Linear(16, action_dim)
-        self.log_std_layer = nn.Linear(16, action_dim)
+        self.l1 = nn.Linear(state_dim, 128)
+        self.l2 = nn.Linear(128, 256)
+        self.l3 = nn.Linear(256, 128)
+        self.mu_layer = nn.Linear(128, action_dim)
+        self.log_std_layer = nn.Linear(128, action_dim)
         self.max_action = max_action
 
     def forward(self, state, explore=True, get_log_pi=True):
