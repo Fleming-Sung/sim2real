@@ -1,8 +1,39 @@
 import numpy as np
 import torch
-from networks import Q_network, Actor, Critic, SAC_Actor
+from networks import Q_network, Actor, Critic, SAC_Actor, Predictor
 from torch.nn import functional as F
 import copy
+#from torch.utils.tensorboard import SummaryWriter
+
+class Predict_Model(object):
+
+    def __init__(self, state_dim, max_pos):
+        self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        self.state_dim = state_dim
+        self.max_pos = max_pos
+        self.predictor = Predictor(self.state_dim, max_pos)
+        self.optimizer = torch.optim.Adam(self.predictor.parameters(), lr=0.01)
+        #self.logger = SummaryWriter('./exp_log_tfb')
+        self.iter = 0
+
+    def train(self, batch_size, replay_buffer):
+        self.iter += 1
+        state, next_state = replay_buffer.get(batch_size)
+        loss = F.mse_loss(self.predictor.forward(state), next_state)
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        #self.logger.add_scalar('train_loss', loss.mean().item(), self.iter)
+
+
+
+    def save(self, filename):
+        torch.save(self.predictor.state_dict(), filename + "_pre")
+        torch.save(self.optimizer.state_dict(), filename + "_pre_optimizer")
+
+    def load(self, filename):
+        self.predictor.load_state_dict(torch.load(filename + "_pre"))
+        self.optimizer.load_state_dict(torch.load(filename + "_pre_optimizer"))
 
 
 class DQN(object):
@@ -15,8 +46,8 @@ class DQN(object):
         self.Q_optimizer = torch.optim.Adam(self.Q.parameters(), lr=0.01)
         self.discount = 0.98
         self.idx = 0
-        self.update_freq = 1
-        self.tau = 1
+        self.update_freq = 10
+        self.tau = 0.01
 
     def select_action(self, state):
         state = torch.FloatTensor(state).to(self.device)
